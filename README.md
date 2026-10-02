@@ -94,17 +94,20 @@ Flask Web监控平台
 
 - ESP32-S3-N16R8
 
+![ESP32-S3 Gateway](docs/images/esp32-s3-N16R8.jpg)
 
 ## 通信模块
 
 - RS485 转换模块
 - USB-RS485 调试模块
 
+![RS485 Module](docs/images/RS485_module.png)
 
 ## 传感器
 
 - Modbus RTU 温湿度传感器
 
+![Hardware](docs/images/hardware.png)
 
 ---
 
@@ -171,6 +174,13 @@ ESP32-Industrial-Gateway
 - 多设备在线状态检测
 
 
+![MQTT_DATA_1](docs/images/mqtt_data.png)
+![MQTT_DATA_2](docs/images/mqtt_data2.png)
+![Dashboard](docs/images/dashbaord.png)
+![log](docs/log/log.txt)
+
+
+
 ---
 
 # 后续计划
@@ -234,6 +244,7 @@ SQLite Database
         |
 Flask Web Dashboard
 
+![System Architecture](docs/images/architecture.png)
 
 ---
 
@@ -284,16 +295,22 @@ Flask Web Dashboard
 
 - ESP32-S3-N16R8
 
+![ESP32-S3 Gateway](docs/images/esp32-s3-N16R8.jpg)
+
 
 ## Communication
 
 - RS485 interface module
 - USB-RS485 converter
 
+![RS485 Module](docs/images/RS485_module.png)
+
 
 ## Sensor
 
 - Modbus RTU temperature and humidity sensor
+
+![Hardware](docs/images/hardware.png)
 
 
 ---
@@ -360,6 +377,12 @@ The system currently supports:
 - Database storage
 - Web-based monitoring
 - Multi-device online status detection
+
+![MQTT_DATA_1](docs/images/mqtt_data.png)
+![MQTT_DATA_2](docs/images/mqtt_data2.png)
+![Dashboard](docs/images/dashbaord.png)
+![log](docs/log/log.md)
+
 
 
 ---
