@@ -43,6 +43,8 @@ SQLite 数据库
     |
 Flask Web监控平台
 
+![System Architecture](docs/images/architecture.png)
+
 ---
 
 # 项目功能
