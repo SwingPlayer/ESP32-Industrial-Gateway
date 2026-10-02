@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+ESP32 Industrial Gateway
+</title>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<style>
+
+
+body
+{
+
+font-family: Arial;
+
+margin:40px;
+
+background:#fafafa;
+
+}
+
+
+h1
+{
+
+font-size:32px;
+
+}
+
+
+
+.device-container
+{
+
+display:flex;
+
+flex-wrap:wrap;
+
+}
+
+
+
+.device-card
+{
+
+background:white;
+
+border:1px solid #ddd;
+
+border-radius:10px;
+
+padding:20px;
+
+margin:10px;
+
+width:260px;
+
+box-shadow:0 2px 5px #ccc;
+
+}
+
+
+
+.online
+{
+
+color:green;
+
+font-weight:bold;
+
+}
+
+
+.offline
+{
+
+color:red;
+
+font-weight:bold;
+
+}
+
+
+.chart-box
+{
+
+background:white;
+
+margin-top:30px;
+
+padding:20px;
+
+border-radius:10px;
+
+width:800px;
+
+}
+
+
+table
+{
+
+border-collapse:collapse;
+
+background:white;
+
+}
+
+
+
+td,th
+{
+
+border:1px solid #ccc;
+
+padding:8px 15px;
+
+}
+
+
+
+</style>
+
+
+</head>
+
+
+
+<body>
+
+
+<h1>
+ESP32 Industrial Gateway
+</h1>
+
+
+
+<h2>
+Device Monitor
+</h2>
+
+
+
+<div id="devices"
+class="device-container">
+
+
+</div>
+
+
+
+
+
+<h2>
+History Data
+</h2>
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>Device</th>
+
+<th>Temperature</th>
+
+<th>Humidity</th>
+
+<th>Time</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="history">
+
+
+</tbody>
+
+
+</table>
+
+
+
+
+
+<div class="chart-box">
+
+
+<h2>
+Temperature Curve
+</h2>
+
+
+<canvas id="temperatureChart"></canvas>
+
+
+</div>
+
+
+
+
+
+<div class="chart-box">
+
+
+<h2>
+Humidity Curve
+</h2>
+
+
+<canvas id="humidityChart"></canvas>
+
+
+</div>
+
+
+
+
+
+
+
+<script>
+
+
+// =======================
+// 温度曲线
+// =======================
+
+
+let tempChart =
+new Chart(
+document.getElementById(
+"temperatureChart"
+),
+{
+
+type:"line",
+
+data:
+{
+
+labels:[],
+
+datasets:
+[{
+
+label:"Temperature ℃",
+
+data:[]
+
+}]
+
+},
+
+
+options:
+{
+
+animation:false
+
+}
+
+
+});
+
+
+
+
+
+// =======================
+// 湿度曲线
+// =======================
+
+
+let humChart =
+new Chart(
+document.getElementById(
+"humidityChart"
+),
+{
+
+type:"line",
+
+data:
+{
+
+labels:[],
+
+datasets:
+[{
+
+label:"Humidity %RH",
+
+data:[]
+
+}]
+
+},
+
+
+options:
+{
+
+animation:false
+
+}
+
+
+});
+
+
+
+
+
+
+
+// =======================
+// 更新设备列表
+// =======================
+
+
+function updateDevices()
+{
+
+fetch("/api/devices")
+
+.then(res=>res.json())
+
+.then(data=>{
+
+
+let container =
+document.getElementById("devices");
+
+
+container.innerHTML="";
+
+
+
+data.forEach(device=>{
+
+
+let color =
+device.status=="ONLINE"
+?
+"green"
+:
+"red";
+
+
+
+container.innerHTML +=
+
+`
+
+<div class="card">
+
+
+<h2>
+Device ${device.device}
+</h2>
+
+
+<p>
+Status:
+<span style="color:${color}">
+${device.status}
+</span>
+</p>
+
+
+<p>
+Temperature:
+${device.temperature ?? "--"} ℃
+</p>
+
+
+<p>
+Humidity:
+${device.humidity ?? "--"} %RH
+</p>
+
+
+<p>
+Last Time:
+${device.time}
+</p>
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+});
+
+
+}
+
+
+
+
+
+
+// =======================
+// 获取设备实时数据
+// =======================
+
+
+function loadDeviceData(id)
+{
+
+
+fetch(
+"/api/device/"+id
+)
+
+
+.then(
+res=>res.json()
+)
+
+
+.then(
+data=>
+{
+
+
+let div =
+document.getElementById(
+"device_"+id
+);
+
+
+
+if(div)
+{
+
+
+div.innerHTML =
+
+`
+
+<p>
+
+Temperature:
+
+${data.temperature}
+℃
+
+</p>
+
+
+<p>
+
+Humidity:
+
+${data.humidity}
+%RH
+
+</p>
+
+
+`;
+
+}
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+// =======================
+// 历史数据
+// =======================
+
+
+function updateHistory()
+{
+
+
+fetch("/api/history")
+
+
+.then(
+res=>res.json()
+)
+
+
+.then(
+data=>
+{
+
+
+let table =
+document.getElementById(
+"history"
+);
+
+
+
+table.innerHTML="";
+
+
+
+let labels=[];
+
+let temps=[];
+
+let hums=[];
+
+
+
+data.reverse();
+
+
+
+data.forEach(
+row=>
+{
+
+
+table.innerHTML +=
+
+
+`
+
+<tr>
+
+<td>${row.id}</td>
+
+<td>${row.device}</td>
+
+<td>${row.temperature}</td>
+
+<td>${row.humidity}</td>
+
+<td>${row.time}</td>
+
+
+</tr>
+
+`;
+
+
+
+labels.push(
+row.time.substring(11)
+);
+
+
+temps.push(
+row.temperature
+);
+
+
+hums.push(
+row.humidity
+);
+
+
+
+});
+
+
+
+
+tempChart.data.labels =
+labels;
+
+
+tempChart.data.datasets[0].data =
+temps;
+
+
+tempChart.update();
+
+
+
+
+humChart.data.labels =
+labels;
+
+
+humChart.data.datasets[0].data =
+hums;
+
+
+humChart.update();
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+// =======================
+// 自动刷新
+// =======================
+
+
+setInterval(
+updateDevices,
+2000
+);
+
+
+
+setInterval(
+updateHistory,
+2000
+);
+
+
+
+updateDevices();
+
+updateHistory();
+
+
+
+</script>
+
+
+
+
+</body>
+
+
+</html>

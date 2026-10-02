@@ -1,55 +1,87 @@
-# Prerequisites
-*.d
+# =========================
+# ESP-IDF
+# =========================
 
-# Object files
-*.o
-*.ko
-*.obj
+# Build files
+build/
+
+# ESP-IDF generated files
+sdkconfig.old
+dependencies.lock
+
+# Bootloader/app binaries
+*.bin
 *.elf
-
-# Linker output
-*.ilk
 *.map
-*.exp
 
-# Precompiled Headers
-*.gch
-*.pch
+# Partition table
+partition-table.bin
 
-# Libraries
-*.lib
+
+# =========================
+# Python
+# =========================
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+.venv/
+
+# Python database
+*.db
+*.sqlite
+*.sqlite3
+
+
+# =========================
+# Flask
+# =========================
+
+instance/
+.webassets-cache/
+
+
+# =========================
+# VS Code
+# =========================
+
+.vscode/
+
+# =========================
+# OS
+# =========================
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+
+# =========================
+# Logs
+# =========================
+
+*.log
+
+
+# =========================
+# General C/C++
+# =========================
+
+*.o
+*.obj
 *.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
+*.lib
 *.so
-*.so.*
-*.dylib
-
-# Executables
+*.dll
 *.exe
 *.out
-*.app
-*.i*86
-*.x86_64
 *.hex
+*.d
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
-
-# debug information files
-*.dwo
